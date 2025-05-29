@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>elriel ascendum ~ Ascending Through Digital Realms</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=VT323&display=swap');
+        
+        :root {
+            --neon-pink: #ff00ff;
+            --neon-cyan: #00ffff;
+            --neon-green: #00ff00;
+            --neon-yellow: #ffff00;
+            --cyber-purple: #9932cc;
+            --dark-bg: #000011;
+            --win95-gray: #c0c0c0;
+            --win95-dark: #808080;
+            --crt-green: #00ff41;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'VT323', monospace;
+            background: var(--dark-bg);
+            color: var(--neon-cyan);
+            overflow-x: hidden;
+            cursor: crosshair;
+        }
+
+        /* CRT Effect */
+        .crt-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+            background: linear-gradient(transparent 50%, rgba(0, 255, 65, 0.03) 50%);
+            background-size: 100% 4px;
+            animation: scanlines 0.1s infinite linear;
+        }
+
+        @keyframes scanlines {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(4px); }
+        }
+
+        /* Three.js Container */
+        #threejs-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        /* Bootup Animation */
+        #bootup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            color: var(--crt-green);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: 'VT323', monospace;
+            animation: bootup-fade 4s ease-out forwards;
+        }
+
+        @keyframes bootup-fade {
+            0%, 80% { opacity: 1; }
+            100% { opacity: 0; pointer-events: none; }
+        }
+
+        .boot-text {
+            font-size: 1.2rem;
+            margin: 0.5rem 0;
+            animation: typewriter 0.5s ease-in-out;
+        }
+
+        @keyframes typewriter {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        /* Header/Navigation */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 40px;
+            background: linear-gradient(145deg, var(--win95-gray), var(--win95-dark));
+            border-bottom: 2px solid var(--neon-pink);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            box-shadow: inset -1px -1px #000, inset 1px 1px #fff;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            height: 100%;
+        }
+
+        .nav-item {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            background: var(--win95-gray);
+            border-right: 1px solid var(--win95-dark);
+            color: #000;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .nav-item:hover {
+            background: var(--neon-cyan);
+            color: var(--dark-bg);
+            box-shadow: inset 1px 1px #000;
+        }
+
+        .nav-item.active {
+            background: var(--cyber-purple);
+            color: white;
+        }
+
+        /* Main Layout */
+        .container {
+            margin-top: 40px;
+            display: flex;
+            min-height: calc(100vh - 40px);
+            gap: 10px;
+            padding: 10px;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            flex: 0 0 250px;
+            background: rgba(192, 192, 192, 0.9);
+            border: 2px outset var(--win95-gray);
+            padding: 10px;
+            height: fit-content;
+            color: #000;
+        }
+
+        .sidebar h3 {
+            background: var(--cyber-purple);
+            color: white;
+            padding: 5px;
+            margin: -10px -10px 10px -10px;
+            font-size: 14px;
+            text-align: center;
+            border-bottom: 2px solid var(--neon-pink);
+        }
+
+        .sidebar ul {
+            list-style: none;
+            margin: 10px 0;
+        }
+
+        .sidebar li {
+            padding: 3px 0;
+            border-bottom: 1px dotted var(--win95-dark);
+        }
+
+        .sidebar a {
+            color: var(--cyber-purple);
+            text-decoration: none;
+            font-size: 12px;
+        }
+
+        .sidebar a:hover {
+            color: var(--neon-pink);
+            text-decoration: underline;
+        }
+
+        .visitor-counter {
+            background: #000;
+            color: var(--neon-green);
+            padding: 10px;
+            text-align: center;
+            border: 2px inset var(--win95-gray);
+            margin: 10px 0;
+            font-family: 'Orbitron', monospace;
+        }
+
+        .download-item {
+            display: flex;
+            align-items: center;
+            padding: 5px;
+            background: rgba(255, 255, 255, 0.8);
+            margin: 3px 0;
+            border: 1px solid var(--win95-dark);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .download-item:hover {
+            background: var(--neon-yellow);
+            transform: translateX(3px);
+        }
+
+        .download-icon {
+            width: 16px;
+            height: 16px;
+            background: var(--cyber-purple);
+            margin-right: 8px;
+            border: 1px solid #000;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .window {
+            background: rgba(192, 192, 192, 0.95);
+            border: 2px outset var(--win95-gray);
+            color: #000;
+            position: relative;
+        }
+
+        .window-header {
+            background: linear-gradient(90deg, var(--cyber-purple), var(--neon-pink));
+            color: white;
+            padding: 5px 10px;
+            font-weight: bold;
+            cursor: move;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+        }
+
+        .window-controls {
+            display: flex;
+            gap: 5px;
+        }
+
+        .window-btn {
+            width: 18px;
+            height: 18px;
+            background: var(--win95-gray);
+            border: 1px outset var(--win95-gray);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .window-btn:hover {
+            background: var(--neon-yellow);
+        }
+
+        .window-content {
+            padding: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        /* Tabs */
+        .tab-container {
+            background: rgba(192, 192, 192, 0.95);
+            border: 2px outset var(--win95-gray);
+            margin-bottom: 15px;
+        }
+
+        .tab-header {
+            display: flex;
+            background: var(--win95-dark);
+            border-bottom: 2px solid var(--cyber-purple);
+        }
+
+        .tab-btn {
+            padding: 8px 15px;
+            background: var(--win95-gray);
+            border: none;
+            border-right: 1px solid var(--win95-dark);
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .tab-btn:hover {
+            background: var(--neon-cyan);
+        }
+
+        .tab-btn.active {
+            background: var(--cyber-purple);
+            color: white;
+        }
+
+        .tab-content {
+            padding: 15px;
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Gallery */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .gallery-item {
+            aspect-ratio: 1;
+            background: linear-gradient(45deg, var(--neon-pink), var(--neon-cyan));
+            border: 2px solid var(--cyber-purple);
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.05) rotate(2deg);
+            box-shadow: 0 0 20px var(--neon-pink);
+        }
+
+        .gallery-item::before {
+            content: "IMG_" attr(data-id);
+            position: absolute;
+            bottom: 5px;
+            left: 5px;
+            background: rgba(0, 0, 0, 0.8);
+            color: var(--neon-green);
+            padding: 2px 5px;
+            font-size: 10px;
+        }
+
+        /* Marquee Text */
+        .marquee {
+            background: #000;
+            color: var(--neon-yellow);
+            padding: 8px;
+            margin: 10px 0;
+            border: 2px solid var(--neon-pink);
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .marquee-text {
+            display: inline-block;
+            animation: scroll-text 15s linear infinite;
+        }
+
+        @keyframes scroll-text {
+            from { transform: translateX(100%); }
+            to { transform: translateX(-100%); }
+        }
+
+        /* Popup Window */
+        .popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(192, 192, 192, 0.98);
+            border: 3px outset var(--win95-gray);
+            z-index: 500;
+            min-width: 300px;
+            display: none;
+        }
+
+        .popup.show {
+            display: block;
+            animation: popup-bounce 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes popup-bounce {
+            0% { transform: translate(-50%, -50%) scale(0); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(145deg, var(--win95-gray), var(--win95-dark));
+            border-top: 2px solid var(--neon-pink);
+            padding: 15px;
+            text-align: center;
+            color: #000;
+            margin-top: 20px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .footer-link {
+            color: var(--cyber-purple);
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .footer-link:hover {
+            color: var(--neon-pink);
+            text-shadow: 0 0 5px var(--neon-pink);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                flex: none;
+                order: 2;
+            }
+            
+            .nav-menu {
+                flex-wrap: wrap;
+                height: auto;
+            }
+            
+            .header {
+                height: auto;
+            }
+            
+            .gallery {
+                grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            }
+        }
+
+        /* Special Effects */
+        .glitch {
+            animation: glitch 2s infinite;
+        }
+
+        @keyframes glitch {
+            0%, 90%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-2px); }
+            40% { transform: translateX(2px); }
+            60% { transform: translateX(-1px); }
+            80% { transform: translateX(1px); }
+        }
+
+        .neon-glow {
+            text-shadow: 
+                0 0 5px currentColor,
+                0 0 10px currentColor,
+                0 0 15px currentColor,
+                0 0 20px var(--neon-pink);
+        }
+
+        /* Collapsible Content */
+        .collapsible {
+            background: rgba(153, 50, 204, 0.1);
+            border: 1px solid var(--cyber-purple);
+            margin: 10px 0;
+        }
+
+        .collapsible-header {
+            background: var(--cyber-purple);
+            color: white;
+            padding: 8px;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s;
+        }
+
+        .collapsible-header:hover {
+            background: var(--neon-pink);
+        }
+
+        .collapsible-content {
+            padding: 10px;
+            display: none;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .collapsible-content.show {
+            display: block;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; height: 0; }
+            to { opacity: 1; height: auto; }
+        }
+
+        /* Music Player */
+        .music-player {
+            background: linear-gradient(145deg, #333, #000);
+            border: 2px outset var(--win95-gray);
+            padding: 10px;
+            margin: 15px 0;
+            color: var(--neon-green);
+            font-family: 'Orbitron', monospace;
+        }
+
+        .player-display {
+            background: #000;
+            color: var(--neon-green);
+            padding: 5px;
+            text-align: center;
+            border: 1px inset var(--win95-dark);
+            margin-bottom: 10px;
+            font-size: 12px;
+        }
+
+        .player-controls {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .player-btn {
+            width: 30px;
+            height: 25px;
+            background: var(--win95-gray);
+            border: 1px outset var(--win95-gray);
+            cursor: pointer;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .player-btn:hover {
+            background: var(--neon-yellow);
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border: 2px solid var(--win95-dark);
+            border-top: 2px solid var(--neon-pink);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- CRT Overlay -->
+    <div class="crt-overlay"></div>
+    
+    <!-- Three.js Background -->
+    <div id="threejs-bg"></div>
+    
+    <!-- Bootup Animation -->
+    <div id="bootup">
+        <div class="boot-text">elriel ascendum v2.3.7</div>
+        <div class="boot-text">Initializing neural interface...</div>
+        <div class="boot-text">Loading aesthetic protocols...</div>
+        <div class="boot-text">Establishing hyperlink matrix...</div>
+        <div class="boot-text">Welcome to the Grid.</div>
+    </div>
+
+    <!-- Header/Navigation -->
+    <header class="header">
+        <nav>
+            <ul class="nav-menu">
+                <li class="nav-item active" data-tab="home">HOME.EXE</li>
+                <li class="nav-item" data-tab="gallery">GALLERY.GIF</li>
+                <li class="nav-item" data-tab="links">WEBRING.HTML</li>
+                <li class="nav-item" data-tab="downloads">WAREZ.ZIP</li>
+                <li class="nav-item" data-tab="guestbook">GUESTBOOK.CGI</li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Left Sidebar -->
+        <aside class="sidebar">
+            <h3>WEBRING CENTRAL</h3>
+            <ul>
+                <li><a href="#">NeoCities Underground</a></li>
+                <li><a href="#">Aesthetic Web Archive</a></li>
+                <li><a href="#">Pixel Palace</a></li>
+                <li><a href="#">Y2K Revival Network</a></li>
+                <li><a href="#">Digital Dreamscape</a></li>
+                <li><a href="#">Retro Computing Hub</a></li>
+                <li><a href="#">Vaporwave Repository</a></li>
+            </ul>
+            
+            <h3>DOWNLOAD ARCHIVE</h3>
+            <div class="download-item">
+                <div class="download-icon"></div>
+                <span>COOLCURSOR.EXE</span>
+            </div>
+            <div class="download-item">
+                <div class="download-icon"></div>
+                <span>NEON_THEME.ZIP</span>
+            </div>
+            <div class="download-item">
+                <div class="download-icon"></div>
+                <span>GLITCH_FX.DLL</span>
+            </div>
+            <div class="download-item">
+                <div class="download-icon"></div>
+                <span>VIBE_CHECK.BAT</span>
+            </div>
+            
+            <div class="visitor-counter">
+                <div>VISITORS:</div>
+                <div style="font-size: 1.5em; color: var(--neon-pink);">001337</div>
+                <div style="font-size: 0.8em;">SINCE 1999</div>
+            </div>
+            
+            <div class="music-player">
+                <div class="player-display">
+                    NOW PLAYING: CYBER_DREAMS.MID
+                </div>
+                <div class="player-controls">
+                    <button class="player-btn">|&lt;</button>
+                    <button class="player-btn">||</button>
+                    <button class="player-btn">&gt;</button>
+                    <button class="player-btn">&gt;|</button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Welcome Window -->
+            <div class="window" id="welcome-window">
+                <div class="window-header">
+                    <span>elriel_ascendum.exe - Welcome to the Grid</span>
+                    <div class="window-controls">
+                        <div class="window-btn">_</div>
+                        <div class="window-btn">[]</div>
+                        <div class="window-btn">X</div>
+                    </div>
+                </div>
+                <div class="window-content">
+                    <h2 class="neon-glow" style="color: var(--neon-pink);">WELCOME TO THE DIGITAL FRONTIER</h2>
+                    <div class="marquee">
+                        <div class="marquee-text">*** HYPNOSPACE PORTAL ACTIVE *** NEURAL INTERFACE ONLINE *** AESTHETIC OVERLOAD INITIATED ***</div>
+                    </div>
+                    <p>Greetings, digital wanderer! You have successfully jacked into the most radical corner of cyberspace. This portal serves as your gateway to the infinite expanse of 90s web aesthetics and Y2K nostalgia.</p>
+                    <br>
+                    <p>Navigate through our virtual windows, explore the webring connections, and download essential digital artifacts. The grid awaits your exploration...</p>
+                    
+                    <div class="collapsible">
+                        <div class="collapsible-header">SYSTEM SPECIFICATIONS</div>
+                        <div class="collapsible-content">
+                            <ul>
+                                <li>OS: Windows 98 (Aesthetic Edition)</li>
+                                <li>Browser: Netscape Navigator 4.0</li>
+                                <li>Connection: 56k Dial-up Modem</li>
+                                <li>Graphics: 256-color VGA</li>
+                                <li>Audio: Sound Blaster Pro</li>
+                                <li>Vibes: Maximum</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabbed Content Window -->
+            <div class="tab-container">
+                <div class="tab-header">
+                    <button class="tab-btn active" data-target="tab1">NEURAL NET</button>
+                    <button class="tab-btn" data-target="tab2">DATA STREAM</button>
+                    <button class="tab-btn" data-target="tab3">MATRIX CODE</button>
+                    <button class="tab-btn" data-target="tab4">AESTHETIC CORE</button>
+                </div>
+                
+                <div class="tab-content active" id="tab1">
+                    <h3 style="color: var(--cyber-purple);">NEURAL NETWORK INTERFACE</h3>
+                    <p>The neural pathways of the internet converge here, where data flows like digital rivers through the vast expanse of cyberspace. Our advanced algorithms process information at the speed of thought.</p>
+                    
+                    <div class="gallery">
+                        <div class="gallery-item" data-id="001"></div>
+                        <div class="gallery-item" data-id="002"></div>
+                        <div class="gallery-item" data-id="003"></div>
+                        <div class="gallery-item" data-id="004"></div>
+                        <div class="gallery-item" data-id="005"></div>
+                        <div class="gallery-item" data-id="006"></div>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="tab2">
+                    <h3 style="color: var(--neon-green);">DATA STREAM ANALYSIS</h3>
+                    <p>Monitoring real-time data flows across the digital infrastructure. Watch as packets of information dance through fiber optic cables.</p>
+                    <div style="background: #000; color: var(--neon-green); padding: 10px; font-family: monospace; margin: 10px 0;">
+                        > INCOMING TRANSMISSION...<br>
+                        > SOURCE: UNKNOWN NODE<br>
+                        > DATA INTEGRITY: 98.7%<br>
+                        > AESTHETIC LEVEL: MAXIMUM<br>
+                        > STATUS: <span class="glitch">DECRYPTING...</span>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="tab3">
+                    <h3 style="color: var(--neon-cyan);">MATRIX SOURCE CODE</h3>
+                    <p>Peer behind the digital curtain and witness the raw code that powers our virtual reality.</p>
+                    <div style="background: #000; color: var(--crt-green); padding: 10px; font-family: monospace; font-size: 12px; max-height: 200px; overflow-y: auto; border: 1px solid var(--neon-green);">
+                        function initializeMatrix() {<br>
+                        &nbsp;&nbsp;const reality = new DigitalReality();<br>
+                        &nbsp;&nbsp;reality.loadAesthetics('neon', 'vaporwave');<br>
+                        &nbsp;&nbsp;reality.setVibeLevel(11);<br>
+                        &nbsp;&nbsp;return reality.activate();<br>
+                        }<br><br>
+                        class CyberEntity {<br>
+                        &nbsp;&nbsp;constructor(id) {<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;this.id = id;<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;this.aesthetic = 'radical';<br>
+                        &nbsp;&nbsp;}<br>
+                        }
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="tab4">
+                    <h3 style="color: var(--neon-pink);">AESTHETIC PROCESSING CORE</h3>
+                    <p>The heart of our visual system, where colors clash beautifully and pixels dance in perfect harmony.</p>
+                    <div style="display: flex; gap: 10px; margin: 10px 0; flex-wrap: wrap;">
+                        <div style="width: 50px; height: 50px; background: var(--neon-pink); border: 2px solid #fff;"></div>
+                        <div style="width: 50px; height: 50px; background: var(--neon-cyan); border: 2px solid #fff;"></div>
+                        <div style="width: 50px; height: 50px; background: var(--neon-green); border: 2px solid #fff;"></div>
+                        <div style="width: 50px; height: 50px; background: var(--neon-yellow); border: 2px solid #fff;"></div>
+                        <div style="width: 50px; height: 50px; background: var(--cyber-purple); border: 2px solid #fff;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Status Window -->
+            <div class="window">
+                <div class="window-header">
+                    <span>SYSTEM_STATUS.LOG</span>
+                    <div class="window-controls">
+                        <div class="window-btn">_</div>
+                        <div class="window-btn">[]</div>
+                        <div class="window-btn">X</div>
+                    </div>
+                </div>
+                <div class="window-content" style="max-height: 150px; overflow-y: auto; background: #000; color: var(--crt-green); font-family: monospace; font-size: 12px;">
+                    [12:34:56] CYBERSPACE CONNECTION: ESTABLISHED<br>
+                    [12:34:57] NEURAL INTERFACE: ONLINE<br>
+                    [12:34:58] AESTHETIC PROTOCOLS: LOADED<br>
+                    [12:34:59] VIBE CHECK: PASSED<br>
+                    [12:35:00] NOSTALGIA LEVEL: CRITICAL<br>
+                    [12:35:01] SCANNING FOR UPDATES... <span class="loading"></span><br>
+                    [12:35:02] NO UPDATES FOUND (PERFECTION ACHIEVED)<br>
+                    [12:35:03] READY FOR USER INPUT...<br>
+                </div>
+            </div>
+        </main>
+
+        <!-- Right Sidebar -->
+        <aside class="sidebar" style="flex: 0 0 200px;">
+            <h3>QUICK LINKS</h3>
+            <ul>
+                <li><a href="#" onclick="showPopup()">About This Site</a></li>
+                <li><a href="#">Site Map</a></li>
+                <li><a href="#">Contact Admin</a></li>
+                <li><a href="#">Privacy Policy</a></li>
+            </ul>
+            
+            <h3>RECENT UPLOADS</h3>
+            <ul>
+                <li><a href="#">new_aesthetic.gif</a></li>
+                <li><a href="#">cyber_music.mid</a></li>
+                <li><a href="#">neon_cursor.ani</a></li>
+                <li><a href="#">y2k_themes.zip</a></li>
+            </ul>
+            
+            <div style="background: var(--cyber-purple); color: white; padding: 10px; margin: 15px 0; text-align: center; border: 2px solid var(--neon-pink);">
+                <div style="font-weight: bold; margin-bottom: 5px;">CYBERSPACE AD</div>
+                <div style="font-size: 10px;">DOWNLOAD MORE RAM</div>
+                <div style="font-size: 10px;">ONLY $19.99!</div>
+                <div style="background: var(--neon-yellow); color: #000; margin-top: 5px; padding: 2px; font-size: 8px; font-weight: bold;">CLICK HERE NOW!</div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div>Copyright 1999-2025 | elriel ascendum | All Rights Reserved in the Digital Dimension</div>
+        <div class="footer-links">
+            <a href="#" class="footer-link">Terms of Service</a>
+            <a href="#" class="footer-link">Digital Privacy</a>
+            <a href="#" class="footer-link">Webmaster Tools</a>
+            <a href="#" class="footer-link">Site Credits</a>
+        </div>
+        <div style="margin-top: 10px; font-size: 10px; color: var(--cyber-purple);">
+            Best viewed in 1024x768 resolution with 16-bit color depth
+        </div>
+    </footer>
+
+    <!-- Popup Window -->
+    <div class="popup" id="about-popup">
+        <div class="window-header">
+            <span>ABOUT_CYBERSPACE.TXT</span>
+            <div class="window-controls">
+                <div class="window-btn" onclick="hidePopup()">X</div>
+            </div>
+        </div>
+        <div class="window-content">
+            <h3 style="color: var(--cyber-purple);">Welcome to the Digital Frontier!</h3>
+            <p>This portal represents the pinnacle of late 90s web design aesthetics, lovingly crafted with HTML, CSS, and Three.js magic.</p>
+            <br>
+            <p><strong>Features:</strong></p>
+            <ul>
+                <li>Retro CRT scanline effects</li>
+                <li>3D hyperspace background</li>
+                <li>Draggable windows</li>
+                <li>Nostalgic color schemes</li>
+                <li>Animated UI elements</li>
+            </ul>
+            <br>
+            <button onclick="hidePopup()" style="padding: 5px 15px; background: var(--neon-pink); color: white; border: none; cursor: pointer;">CLOSE</button>
+        </div>
+    </div>
+
+    <!-- Three.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <script>
+        // Three.js Hyperspace Background
+        let scene, camera, renderer, stars = [];
+        
+        function initThreeJS() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setClearColor(0x000011, 0.8);
+            document.getElementById('threejs-bg').appendChild(renderer.domElement);
+
+            // Create starfield
+            const starGeometry = new THREE.BufferGeometry();
+            const starCount = 3000;
+            const positions = new Float32Array(starCount * 3);
+            const colors = new Float32Array(starCount * 3);
+
+            for (let i = 0; i < starCount * 3; i += 3) {
+                positions[i] = (Math.random() - 0.5) * 2000;
+                positions[i + 1] = (Math.random() - 0.5) * 2000;
+                positions[i + 2] = Math.random() * 2000 - 1000;
+
+                // Neon colors for stars
+                const colorChoice = Math.random();
+                if (colorChoice < 0.3) {
+                    colors[i] = 1; colors[i + 1] = 0; colors[i + 2] = 1; // Magenta
+                } else if (colorChoice < 0.6) {
+                    colors[i] = 0; colors[i + 1] = 1; colors[i + 2] = 1; // Cyan
+                } else {
+                    colors[i] = 0; colors[i + 1] = 1; colors[i + 2] = 0; // Green
+                }
+            }
+
+            starGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            starGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+            const starMaterial = new THREE.PointsMaterial({
+                size: 2,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.8
+            });
+
+            const starField = new THREE.Points(starGeometry, starMaterial);
+            scene.add(starField);
+
+            // Add some geometric shapes
+            const geometries = [
+                new THREE.TetrahedronGeometry(20),
+                new THREE.OctahedronGeometry(15),
+                new THREE.IcosahedronGeometry(25)
+            ];
+
+            for (let i = 0; i < 20; i++) {
+                const geometry = geometries[Math.floor(Math.random() * geometries.length)];
+                const material = new THREE.MeshBasicMaterial({
+                    color: [0xff00ff, 0x00ffff, 0x00ff00][Math.floor(Math.random() * 3)],
+                    wireframe: true,
+                    transparent: true,
+                    opacity: 0.3
+                });
+                const mesh = new THREE.Mesh(geometry, material);
+                
+                mesh.position.set(
+                    (Math.random() - 0.5) * 1000,
+                    (Math.random() - 0.5) * 1000,
+                    Math.random() * -500 - 200
+                );
+                
+                mesh.rotation.set(
+                    Math.random() * Math.PI,
+                    Math.random() * Math.PI,
+                    Math.random() * Math.PI
+                );
+                
+                scene.add(mesh);
+                stars.push(mesh);
+            }
+
+            camera.position.z = 5;
+            animate();
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Move stars towards camera
+            const positions = scene.children[0].geometry.attributes.position.array;
+            for (let i = 2; i < positions.length; i += 3) {
+                positions[i] += 3;
+                if (positions[i] > 1000) {
+                    positions[i] = -1000;
+                }
+            }
+            scene.children[0].geometry.attributes.position.needsUpdate = true;
+
+            // Rotate geometric shapes
+            stars.forEach(star => {
+                star.rotation.x += 0.01;
+                star.rotation.y += 0.01;
+                star.position.z += 2;
+                if (star.position.z > 200) {
+                    star.position.z = -500;
+                }
+            });
+
+            renderer.render(scene, camera);
+        }
+
+        // Tab functionality
+        function initTabs() {
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const target = btn.getAttribute('data-target');
+                    
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+                    
+                    btn.classList.add('active');
+                    document.getElementById(target).classList.add('active');
+                });
+            });
+        }
+
+        // Navigation functionality
+        function initNavigation() {
+            const navItems = document.querySelectorAll('.nav-item');
+            
+            navItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    navItems.forEach(n => n.classList.remove('active'));
+                    item.classList.add('active');
+                });
+            });
+        }
+
+        // Collapsible content
+        function initCollapsibles() {
+            const headers = document.querySelectorAll('.collapsible-header');
+            
+            headers.forEach(header => {
+                header.addEventListener('click', () => {
+                    const content = header.nextElementSibling;
+                    content.classList.toggle('show');
+                });
+            });
+        }
+
+        // Window dragging functionality
+        function initDraggableWindows() {
+            const windows = document.querySelectorAll('.window');
+            
+            windows.forEach(window => {
+                const header = window.querySelector('.window-header');
+                let isDragging = false;
+                let currentX, currentY, initialX, initialY;
+                
+                header.addEventListener('mousedown', (e) => {
+                    isDragging = true;
+                    initialX = e.clientX - window.offsetLeft;
+                    initialY = e.clientY - window.offsetTop;
+                    window.style.position = 'relative';
+                    window.style.zIndex = '200';
+                });
+                
+                document.addEventListener('mousemove', (e) => {
+                    if (isDragging) {
+                        currentX = e.clientX - initialX;
+                        currentY = e.clientY - initialY;
+                        window.style.transform = `translate(${currentX}px, ${currentY}px)`;
+                    }
+                });
+                
+                document.addEventListener('mouseup', () => {
+                    isDragging = false;
+                    window.style.zIndex = '1';
+                });
+            });
+        }
+
+        // Popup functions
+        function showPopup() {
+            document.getElementById('about-popup').classList.add('show');
+        }
+
+        function hidePopup() {
+            document.getElementById('about-popup').classList.remove('show');
+        }
+
+        // Keyboard shortcuts
+        function initKeyboardShortcuts() {
+            document.addEventListener('keydown', (e) => {
+                // Ctrl + Shift + P for popup
+                if (e.ctrlKey && e.shiftKey && e.key === 'P') {
+                    showPopup();
+                }
+                
+                // Escape to close popup
+                if (e.key === 'Escape') {
+                    hidePopup();
+                }
+            });
+        }
+
+        // Window resize handler
+        function handleResize() {
+            if (renderer) {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            }
+        }
+
+        // Initialize everything
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                initThreeJS();
+                initTabs();
+                initNavigation();
+                initCollapsibles();
+                initDraggableWindows();
+                initKeyboardShortcuts();
+                
+                // Hide bootup screen
+                document.getElementById('bootup').style.display = 'none';
+            }, 4000);
+        });
+
+        window.addEventListener('resize', handleResize);
+
+        // Add some interactive effects
+        document.addEventListener('mousemove', (e) => {
+            const cursor = document.createElement('div');
+            cursor.style.position = 'fixed';
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+            cursor.style.width = '4px';
+            cursor.style.height = '4px';
+            cursor.style.background = 'var(--neon-pink)';
+            cursor.style.borderRadius = '50%';
+            cursor.style.pointerEvents = 'none';
+            cursor.style.zIndex = '1001';
+            cursor.style.animation = 'fade-out 0.5s ease-out forwards';
+            
+            document.body.appendChild(cursor);
+            
+            setTimeout(() => {
+                cursor.remove();
+            }, 500);
+        });
+
+        // Add fade-out animation for cursor trail
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fade-out {
+                from { opacity: 1; transform: scale(1); }
+                to { opacity: 0; transform: scale(0); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Gallery click effects
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('gallery-item')) {
+                e.target.style.background = `linear-gradient(${Math.random() * 360}deg, var(--neon-pink), var(--neon-cyan), var(--neon-green))`;
+            }
+        });
+
+        // Random glitch effect
+        setInterval(() => {
+            const elements = document.querySelectorAll('h2, h3');
+            const randomElement = elements[Math.floor(Math.random() * elements.length)];
+            randomElement.classList.add('glitch');
+            setTimeout(() => {
+                randomElement.classList.remove('glitch');
+            }, 1000);
+        }, 5000);
+    </script>
+</body>
+</html>
